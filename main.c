@@ -80,13 +80,11 @@ void xdump(int set, int way, struct cache_entry ** cache)
 	int i,j,k = 0;
 
 	printf("Cache Content:\n");
-    printf("-------------------------------------\n");
+        printf("-------------------------------------\n");
 	for(i = 0; i < way;i++)
 	{
 		if(i == 0)
-		{
 			printf("    ");
-		}
 		printf("      WAY[%d]",i);
 	}
 	printf("\n");
@@ -95,13 +93,7 @@ void xdump(int set, int way, struct cache_entry ** cache)
 	{
 		printf("SET[%d]:   ",i);
 		for(j = 0; j < way;j++)
-		{
-			if(k != 0 && j == 0)
-			{
-				printf("          ");
-			}
 			printf("0x%08x  ", cache[i][j].data);
-		}
 		printf("\n");
 	}
 	printf("\n");
