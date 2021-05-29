@@ -341,6 +341,7 @@ int main(int argc, char *argv[]) {
 
 	if (dump_cache_stat)
 		xdump(data_cache.set,data_cache.assoc,data_cache.cache);
+	fclose(fp);
 
     return 0;
 }
