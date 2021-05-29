@@ -52,7 +52,7 @@ typedef struct lrutable
 void cdump(int capacity, int assoc, int blocksize){
 
 	printf("Cache Configuration:\n");
-    printf("-------------------------------------\n");
+        printf("-------------------------------------\n");
 	printf("Capacity: %dB\n", capacity);
 	printf("Associativity: %dway\n", assoc);
 	printf("Block Size: %dB\n", blocksize);
@@ -63,7 +63,7 @@ void cdump(int capacity, int assoc, int blocksize){
 void sdump(int total_reads, int total_writes, int write_backs,
 	int reads_hits, int write_hits, int reads_misses, int write_misses) {
 	printf("Cache Stat:\n");
-    printf("-------------------------------------\n");
+        printf("-------------------------------------\n");
 	printf("Total reads: %d\n", total_reads);
 	printf("Total writes: %d\n", total_writes);
 	printf("Write-backs: %d\n", write_backs);
@@ -81,10 +81,12 @@ void xdump(int set, int way, struct cache_entry ** cache)
 
 	printf("Cache Content:\n");
         printf("-------------------------------------\n");
+	
 	for(i = 0; i < way;i++)
 	{
 		if(i == 0)
 			printf("    ");
+		
 		printf("      WAY[%d]",i);
 	}
 	printf("\n");
@@ -94,6 +96,7 @@ void xdump(int set, int way, struct cache_entry ** cache)
 		printf("SET[%d]:   ",i);
 		for(j = 0; j < way;j++)
 			printf("0x%08x  ", cache[i][j].data);
+		
 		printf("\n");
 	}
 	printf("\n");
@@ -117,9 +120,7 @@ void Init_Cache_Entries(CACHE  *d_cache)
 	d_cache->cache = calloc(set,sizeof(struct cache_entry *));
 
 	for (int i = 0; i < set; i++)
-	{
 		d_cache->cache[i] = calloc(d_cache->assoc,sizeof(struct cache_entry));
-	}
 }
 
 
