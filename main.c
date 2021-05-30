@@ -306,7 +306,7 @@ int main(int argc, char *argv[]) {
 	
 	}
 
-	else if (argc == DUMP_CACHE_LEN)
+	else if (argc == DUMP_CACHE_LEN - 1)
 		filepath = argv[3];
 	else
 	{
