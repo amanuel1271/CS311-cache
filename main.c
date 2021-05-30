@@ -188,7 +188,8 @@ void update_LRU_table(LRU_TABLE *table, int assoc_index, int cache_index,uint32_
 	if (assoc_index == entry[assoc - 1]) //  already most recently used, so dont do anything
 		return;
 
-	while (entry[i] != assoc_index)  i++;
+	while (entry[i] != assoc_index)  
+		i++;
 
 	for (int j = i+1 ; j <= assoc - 1; j++)
 		entry[j - 1] = entry[j];
