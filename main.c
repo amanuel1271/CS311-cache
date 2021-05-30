@@ -13,6 +13,8 @@
 #define READ "R"
 #define MAX_32 0xFFFFFFFF
 #define CACHE_MISS -1
+#define READ_MISS_FLAG 0
+#define WRITE_MISS_FLAG 1
 
 #define MASK_BLOCK_OFFSET(addr,block_bits) addr & (MAX_32 << block_bits)
 #define EXTRACT_INDEX(addr,index_bits,block_bits)  (addr & ~(MAX_32 << (index_bits + block_bits))) >> block_bits
@@ -263,7 +265,7 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 		{
 			//which block to evict
 			int isfull = table[cache_index].isfullyoccupied;
-			handle_miss(table,dcache,isfull,data,tag,cache_index,0);
+			handle_miss(table,dcache,isfull,data,tag,cache_index,READ_MISS_FLAG);
 			read_miss++;
 		}
 
@@ -283,7 +285,7 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 		else
 		{
 			int isfull = table[cache_index].isfullyoccupied;
-			handle_miss(table,dcache,isfull,data,tag,cache_index,1);
+			handle_miss(table,dcache,isfull,data,tag,cache_index,WRITE_MISS_FLAG);
 			write_miss++;
 
 		}
