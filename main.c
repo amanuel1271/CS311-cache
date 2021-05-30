@@ -306,8 +306,13 @@ int main(int argc, char *argv[]) {
 	
 	}
 
-	else
+	else if (argc == DUMP_CACHE_LEN)
 		filepath = argv[3];
+	else
+	{
+		fprintf(stderr,"The number of command line arguments provided is not correct\n");
+		return 1;
+	}
 
 	FILE *fp = fopen(filepath,"r");
 
