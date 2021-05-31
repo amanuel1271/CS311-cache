@@ -134,7 +134,7 @@ LRU_TABLE *Init_LRU_table(uint32_t set,uint32_t assoc)
 	for (int i = 0; i < set; i++)
 	{
 		table[i].lruarr = calloc(assoc,sizeof(uint32_t));
-
+		
 		for (int j = 0; j < assoc; j++)
 			table[i].lruarr[j] = assoc - j - 1;
 	}
