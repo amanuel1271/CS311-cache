@@ -23,31 +23,24 @@
 int total_read = 0,total_write = 0,write_back = 0;
 int read_hit = 0,write_hit = 0,read_miss = 0,write_miss = 0;
 
-struct cache_entry
-{
+struct cache_entry {
 	uint32_t data;
 	uint32_t tag;
 	uint8_t dirty_bit;
 	uint8_t valid_bit;
-
 };
 
-typedef struct cache_block
-{
+typedef struct cache_block {
 	uint32_t set;
 	uint32_t assoc;
 	uint32_t capacity;
 	uint32_t block_size;
 	struct cache_entry **cache;
-
-
 }CACHE;
 
-typedef struct lrutable
-{
+typedef struct lrutable {
 	int isfullyoccupied;
 	uint32_t *lruarr;
-
 }LRU_TABLE;
 
 
@@ -88,7 +81,6 @@ void xdump(int set, int way, struct cache_entry ** cache)
 	{
 		if(i == 0)
 			printf("    ");
-		
 		printf("      WAY[%d]",i);
 	}
 	printf("\n");
@@ -98,7 +90,6 @@ void xdump(int set, int way, struct cache_entry ** cache)
 		printf("SET[%d]:   ",i);
 		for(j = 0; j < way;j++)
 			printf("0x%08x  ", cache[i][j].data);
-		
 		printf("\n");
 	}
 	printf("\n");
@@ -120,7 +111,6 @@ void Init_Cache_Entries(CACHE  *d_cache)
 {
 	uint32_t set = d_cache->set;
 	d_cache->cache = calloc(set,sizeof(struct cache_entry *));
-
 	for (int i = 0; i < set; i++)
 		d_cache->cache[i] = calloc(d_cache->assoc,sizeof(struct cache_entry));
 }
@@ -130,11 +120,9 @@ void Init_Cache_Entries(CACHE  *d_cache)
 LRU_TABLE *Init_LRU_table(uint32_t set,uint32_t assoc)
 {
 	LRU_TABLE *table = calloc(set,sizeof(LRU_TABLE));
-
 	for (int i = 0; i < set; i++)
 	{
 		table[i].lruarr = calloc(assoc,sizeof(uint32_t));
-		
 		for (int j = 0; j < assoc; j++)
 			table[i].lruarr[j] = assoc - j - 1;
 	}
@@ -161,13 +149,11 @@ int my_log_to_base_2(uint32_t num) // num must be power of two
 int cache_hit(CACHE *dcache, uint32_t tag,uint32_t index)
 {
 	uint32_t assoc = dcache->assoc;
-
 	for (int i = 0; i < assoc ; i++)
 	{
 		if (dcache->cache[index][i].valid_bit && (tag == dcache->cache[index][i].tag) )
 			return i;
 	}
-
 	return CACHE_MISS;
 }
 
@@ -186,16 +172,11 @@ uint32_t hex_string_to_int(char* hex_str)
 void update_LRU_table(LRU_TABLE *table, int assoc_index, int cache_index,uint32_t assoc)
 {
 	uint32_t *entry = table[cache_index].lruarr,i = 0;
-
 	if (assoc_index == entry[assoc - 1]) //  already most recently used, so dont do anything
 		return;
-
-	while (entry[i] != assoc_index)  
-		i++;
-
+	while (entry[i] != assoc_index)   i++;
 	for (int j = i+1 ; j <= assoc - 1; j++)
 		entry[j - 1] = entry[j];
-
 	entry[assoc - 1] = assoc_index;
 }
 
@@ -243,9 +224,7 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 {
 	char *action = strtok(buf,SPACE);
 	uint32_t addr = hex_string_to_int(strtok(NULL,SPACE));
-
 	uint32_t index_bits = my_log_to_base_2(dcache->set),block_bits = my_log_to_base_2(dcache->block_size);
-
 	uint32_t data = MASK_BLOCK_OFFSET(addr,block_bits);
 	uint32_t tag = EXTRACT_TAG(addr,index_bits,block_bits);
 	uint32_t cache_index = EXTRACT_INDEX(addr,index_bits,block_bits);
@@ -258,7 +237,6 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 		{
 			read_hit++;
 			update_LRU_table(table,cache_hit_status,cache_index,dcache->assoc);
-
 		}
 
 		else // cache miss
