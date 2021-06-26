@@ -76,7 +76,6 @@ void xdump(int set, int way, struct cache_entry ** cache)
 
 	printf("Cache Content:\n");
         printf("-------------------------------------\n");
-	
 	for(i = 0; i < way;i++)
 	{
 		if(i == 0)
@@ -84,7 +83,6 @@ void xdump(int set, int way, struct cache_entry ** cache)
 		printf("      WAY[%d]",i);
 	}
 	printf("\n");
-
 	for(i = 0 ; i < set;i++)
 	{
 		printf("SET[%d]:   ",i);
@@ -175,13 +173,10 @@ void update_LRU_table(LRU_TABLE *table, int assoc_index, int cache_index,uint32_
 	
 	if (assoc_index == entry[assoc - 1]) //  already most recently used, so dont do anything
 		return;
-	
 	while (entry[i] != assoc_index)   
 		i++;
-	
 	for (int j = i+1 ; j <= assoc - 1; j++)
 		entry[j - 1] = entry[j];
-	
 	entry[assoc - 1] = assoc_index;
 }
 
@@ -196,7 +191,6 @@ void handle_miss(LRU_TABLE *table,CACHE *dcache,int isfull,uint32_t data, uint32
 
 		if (dcache->cache[cache_index][evicted_block_index].dirty_bit)
 			write_back++;
-
 		dcache->cache[cache_index][evicted_block_index].data = data;
 		dcache->cache[cache_index][evicted_block_index].tag = tag;
 		dcache->cache[cache_index][evicted_block_index].dirty_bit = flag;
@@ -205,17 +199,15 @@ void handle_miss(LRU_TABLE *table,CACHE *dcache,int isfull,uint32_t data, uint32
 	else
 	{
 		int j = 0;
-
 		for (; j < dcache->assoc ; j++)
 			if (!dcache->cache[cache_index][j].valid_bit)
 				break;
-
+		
 		dcache->cache[cache_index][j].valid_bit = 1;
 		dcache->cache[cache_index][j].data = data;
 		dcache->cache[cache_index][j].tag = tag;
 		dcache->cache[cache_index][j].dirty_bit = flag;
 		update_LRU_table(table,j,cache_index,dcache->assoc);
-
 		if (j == dcache->assoc - 1)
 			table[cache_index].isfullyoccupied = 1;
 	}
@@ -233,7 +225,6 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 	uint32_t data = MASK_BLOCK_OFFSET(addr,block_bits);
 	uint32_t tag = EXTRACT_TAG(addr,index_bits,block_bits);
 	uint32_t cache_index = EXTRACT_INDEX(addr,index_bits,block_bits);
-
 	if (!strcmp(action,READ))
 	{
 		int cache_hit_status = cache_hit(dcache,tag,cache_index);
@@ -251,7 +242,6 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 			handle_miss(table,dcache,isfull,data,tag,cache_index,READ_MISS_FLAG);
 			read_miss++;
 		}
-
 		total_read++;
 	}
 	else
@@ -272,7 +262,6 @@ void handle_cache(char *buf, CACHE *dcache,LRU_TABLE *table)
 			write_miss++;
 
 		}
-
 		total_write++;
 	}
 }
