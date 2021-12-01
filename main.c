@@ -100,7 +100,6 @@ void xdump(int set, int way, struct cache_entry ** cache){
 
 
 void ParseInfo(char *buf,uint32_t *capac,uint32_t *assoc,uint32_t *block_s){
-	
 	*capac = atoi(strtok(buf,SEMI_COLON));
 	*assoc = atoi(strtok(NULL,SEMI_COLON));
 	*block_s = atoi(strtok(NULL,SEMI_COLON));
