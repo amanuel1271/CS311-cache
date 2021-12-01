@@ -50,7 +50,6 @@ typedef struct lrutable{
 
 
 void cdump(int capacity, int assoc, int blocksize){
-	
 	printf("Cache Configuration:\n");
         printf("-------------------------------------\n");
 	printf("Capacity: %dB\n", capacity);
@@ -62,7 +61,6 @@ void cdump(int capacity, int assoc, int blocksize){
 
 void sdump(int total_reads, int total_writes, int write_backs,
 	int reads_hits, int write_hits, int reads_misses, int write_misses){
-	
 	printf("Cache Stat:\n");
         printf("-------------------------------------\n");
 	printf("Total reads: %d\n", total_reads);
@@ -108,7 +106,6 @@ void ParseInfo(char *buf,uint32_t *capac,uint32_t *assoc,uint32_t *block_s){
 
 
 void InitCacheEntries(CACHE  *d_cache){
-	
 	uint32_t set = d_cache->set;
 	d_cache->cache = calloc(set,sizeof(struct cache_entry *));
 	for (int i = 0; i < set; i++)
@@ -118,7 +115,6 @@ void InitCacheEntries(CACHE  *d_cache){
 
 
 LRU_TABLE *InitLruTable(uint32_t set,uint32_t assoc){
-	
 	LRU_TABLE *table = calloc(set,sizeof(LRU_TABLE));
 	for (int i = 0; i < set; i++){
 		table[i].lruarr = calloc(assoc,sizeof(uint32_t));
@@ -131,7 +127,6 @@ LRU_TABLE *InitLruTable(uint32_t set,uint32_t assoc){
 
 
 int MyLogToBase2(uint32_t num){ // num must be power of two
-	
 	int count = 0;
 	while (!(num & 0x1)){
 		count++;
@@ -144,7 +139,6 @@ int MyLogToBase2(uint32_t num){ // num must be power of two
 
 
 int CacheHit(CACHE *dcache, uint32_t tag,uint32_t index){
-	
 	uint32_t assoc = dcache->assoc;
 	for (int i = 0; i < assoc ; i++){
 		if (dcache->cache[index][i].valid_bit && (tag == dcache->cache[index][i].tag) )
@@ -157,7 +151,6 @@ int CacheHit(CACHE *dcache, uint32_t tag,uint32_t index){
 
 
 uint32_t HexStringToInt(char* hex_str){
-	
     int num = (int)strtol(hex_str,NULL,16);
     return num;
 }
@@ -166,7 +159,6 @@ uint32_t HexStringToInt(char* hex_str){
 
 
 void UpdateLruTable(LRU_TABLE *table, int assoc_index, int cache_index,uint32_t assoc){
-	
 	uint32_t *entry = table[cache_index].lruarr,i = 0;
 	if (assoc_index == entry[assoc - 1]) //  already most recently used, so dont do anything
 		return;
@@ -183,7 +175,6 @@ void UpdateLruTable(LRU_TABLE *table, int assoc_index, int cache_index,uint32_t 
 
 
 void HandleMiss(LRU_TABLE *table,CACHE *dcache,int isfull,uint32_t data, uint32_t tag, uint32_t cache_index,int flag){
-	
 	if (isfull){
 		
 		uint32_t evicted_block_index = table[cache_index].lruarr[0]; //LRU block
@@ -197,18 +188,15 @@ void HandleMiss(LRU_TABLE *table,CACHE *dcache,int isfull,uint32_t data, uint32_
 		UpdateLruTable(table,evicted_block_index,cache_index,dcache->assoc);
 	}
 	else{
-		
 		int j = 0;
 		for (; j < dcache->assoc ; j++)
 			if (!dcache->cache[cache_index][j].valid_bit)
 				break;
-		
 		dcache->cache[cache_index][j].valid_bit = 1;
 		dcache->cache[cache_index][j].data = data;
 		dcache->cache[cache_index][j].tag = tag;
 		dcache->cache[cache_index][j].dirty_bit = flag;
 		UpdateLruTable(table,j,cache_index,dcache->assoc);
-		
 		if (j == dcache->assoc - 1)
 			table[cache_index].isfullyoccupied = 1;
 	}
@@ -219,7 +207,6 @@ void HandleMiss(LRU_TABLE *table,CACHE *dcache,int isfull,uint32_t data, uint32_
 
 
 void HandleCache(char *buf, CACHE *dcache,LRU_TABLE *table){
-	
 	char *action = strtok(buf,SPACE);
 	uint32_t addr = HexStringToInt(strtok(NULL,SPACE));
 	uint32_t index_bits = MyLogToBase2(dcache->set),block_bits = MyLogToBase2(dcache->block_size);
@@ -227,11 +214,9 @@ void HandleCache(char *buf, CACHE *dcache,LRU_TABLE *table){
 	uint32_t tag = ExtractTag(addr,index_bits,block_bits);
 	uint32_t cache_index = ExtractIndex(addr,index_bits,block_bits);
 	
-	
 	if (!strcmp(action,READ)){
 		
 		int cache_hit_status = CacheHit(dcache,tag,cache_index);
-		
 		if (cache_hit_status != CACHE_MISS){ //cache hit
 			read_hit++;
 			UpdateLruTable(table,cache_hit_status,cache_index,dcache->assoc);
@@ -246,7 +231,6 @@ void HandleCache(char *buf, CACHE *dcache,LRU_TABLE *table){
 		total_read++;
 	}
 	else{
-		
 		int cache_hit_status = CacheHit(dcache,tag,cache_index);
 		if (cache_hit_status != CACHE_MISS){
 			write_hit++;
@@ -294,7 +278,6 @@ int main(int argc, char *argv[]) {
 	
 	strcpy(info_buf,argv[2]);
 	ParseInfo(info_buf,&data_cache.capacity,&data_cache.assoc,&data_cache.block_size);
-	
 	data_cache.set = data_cache.capacity/(data_cache.block_size * data_cache.assoc);
 	
 	InitCacheEntries(&data_cache);
